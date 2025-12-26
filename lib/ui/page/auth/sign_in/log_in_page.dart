@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/common/app_images.dart';
 import 'package:todo_app/generated/l10n.dart';
+import 'package:todo_app/repository/auth_repository.dart';
+import 'package:todo_app/ui/page/auth/sign_in/log_in_cubit.dart';
 import 'package:todo_app/ui/page/auth/sign_in/log_in_navigator.dart';
-import 'package:todo_app/ui/page/auth/sign_in/log_in_provider.dart';
 import 'package:todo_app/ui/widgets/app_text_form_field.dart';
 import 'package:todo_app/ui/widgets/button_purple.dart';
 import 'package:todo_app/utils/app_validator.dart';
@@ -13,35 +14,47 @@ class LogInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => LogInProvider(navigator: LogInNavigator(context: context)),
-      child: LogInChildPage(),
+    return BlocProvider<LogInCubit>(
+      create: (context) {
+        return LogInCubit(
+          navigator: LogInNavigator(context: context), authRepos: context.read<AuthRepository>(),
+        );
+      },
+      child: LogInPageChild(),
     );
   }
 }
 
-class LogInChildPage extends StatefulWidget {
-  const LogInChildPage({super.key});
+class LogInPageChild extends StatefulWidget {
+  const LogInPageChild({super.key});
 
   @override
-  State<LogInChildPage> createState() => _LogInChildPageState();
+  State<LogInPageChild> createState() => _LogInPageChildState();
 }
 
-class _LogInChildPageState extends State<LogInChildPage> {
+class _LogInPageChildState extends State<LogInPageChild> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+
+  @override
+  void initState() {
+    super.initState();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+  }
   @override
   Widget build(BuildContext context) {
-    final provider = context.read<LogInProvider>();
-    final formKey = GlobalKey<FormState>();
 
-    final TextEditingController emailTextController = TextEditingController(text: provider.email);
-    final TextEditingController passwordTextController = TextEditingController(text: provider.password);
+
+    final cubit = context.read<LogInCubit>();
 
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         physics: const ClampingScrollPhysics(),
         child: Form(
-          key: formKey,
+          key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -51,18 +64,18 @@ class _LogInChildPageState extends State<LogInChildPage> {
               const SizedBox(height: 28),
               AppTextFormField(
                 keyboardType: TextInputType.emailAddress,
-                controller: emailTextController,
+                controller: emailController,
                 hintText: S.of(context).hint_email,
-                onChange: provider.setEmail,
+                onChange: cubit.setEmail,
                 validator: (value) => AppValidator.validateEmail(value, S.of(context).valid_email_required, S.of(context).valid_email_format),
               ),
 
               // password
               AppTextFormField(
                 obscureText: true,
-                controller: passwordTextController,
+                controller: passwordController,
                 hintText: S.of(context).hint_password,
-                onChange: provider.setPassword,
+                onChange: cubit.setPassword,
                 validator: (value) => AppValidator.validatePassword(value, S.of(context).valid_password_enter),
               ),
 
@@ -71,14 +84,14 @@ class _LogInChildPageState extends State<LogInChildPage> {
               ButtonPurple(
                 textButton: S.of(context).button_login,
                 onTap: () {
-                  if (formKey.currentState!.validate()){
-                    provider.signIn();
+                  if (_formKey.currentState!.validate()){
+                    cubit.login();
                   }
                   //
                 },
               ),
               const SizedBox(height: 24),
-              _buildSignInWidget(provider),
+              _buildSignInWidget(cubit),
               const SizedBox(height: 24),
             ],
           ),
@@ -87,13 +100,13 @@ class _LogInChildPageState extends State<LogInChildPage> {
     );
   }
 
-  _buildSignInWidget(LogInProvider provider) {
+  _buildSignInWidget(LogInCubit cubit) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         TextButton(
           onPressed: () {
-            provider.onPressSignup();
+            cubit.onPressSignup();
           },
           child: Text(S.of(context).button_sign_up),
         ),

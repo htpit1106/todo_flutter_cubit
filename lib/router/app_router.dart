@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:todo_app/model/entities/profile/profile_entity.dart';
 import 'package:todo_app/model/entities/todo_entity.dart';
 import 'package:todo_app/ui/page/add_task/add_task_page.dart';
 import 'package:todo_app/ui/page/auth/sign_in/log_in_page.dart';
@@ -20,7 +19,7 @@ class AppRouter {
   static const String addTask = "/add_task";
   static const String logIn = "/log_in";
   static const String signUp = "/sign_up";
-  static final String profile ="/profile";
+  static final String profile = "/profile";
   static final updateProfile = "/update_profile";
   static final navigationKey = GlobalKey<NavigatorState>();
   static final GoRouter router = GoRouter(
@@ -39,10 +38,13 @@ class AppRouter {
       GoRoute(path: signUp, name: signUp, builder: (context, state) => SignUpPage()),
       GoRoute(path: logIn, name: logIn, builder: (context, state) => LogInPage()),
       GoRoute(path: profile, name: profile, builder: (context, state) => ProfilePage()),
-      GoRoute(path: updateProfile, name: updateProfile, builder: (context, state) {
-        final profileEntity = state.extra as ProfileEntity;
-        return UpdateProfilePage(profileEntity: profileEntity);
-      }),
+      GoRoute(
+        path: updateProfile,
+        name: updateProfile,
+        builder: (context, state) {
+          return UpdateProfilePage();
+        },
+      ),
     ],
     initialLocation: splash,
     debugLogDiagnostics: false,

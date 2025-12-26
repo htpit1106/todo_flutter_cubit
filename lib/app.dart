@@ -1,17 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/common/app_themes.dart';
 import 'package:todo_app/configs/app_config.dart';
+import 'package:todo_app/global/user_cubit.dart';
+import 'package:todo_app/repository/auth_repository.dart';
+import 'package:todo_app/repository/profile_repository.dart';
+import 'package:todo_app/repository/todo_repository.dart';
 import 'package:todo_app/router/app_router.dart';
 import 'package:todo_app/generated/l10n.dart';
 
-class TodoApp extends StatefulWidget {
+class TodoApp extends StatelessWidget {
   const TodoApp({super.key});
 
   @override
-  State<TodoApp> createState() => _TodoAppState();
+  Widget build(BuildContext context) {
+    return  MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<AuthRepository>(
+          create: (_) => AuthRepositoryImpl(),
+        ),
+        RepositoryProvider<TodoRepository>(
+          create: (_) => TodoRepositorImpl(),
+        ),
+        RepositoryProvider<ProfileRepository>(
+          create: (_) => ProfileRepositoryImpl(),
+        ),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<UserCubit>(
+            create: (context) =>
+            UserCubit(
+              profileRepo: context.read<ProfileRepository>(),
+            )
+              ..loadUser(),
+          ),
+        ],
+        child: const TodoAppChild(),
+      ),
+    );
+  }
 }
 
-class _TodoAppState extends State<TodoApp> {
+class TodoAppChild extends StatefulWidget {
+  const TodoAppChild({super.key});
+
+  @override
+  State<TodoAppChild> createState() => _TodoAppChildState();
+}
+
+class _TodoAppChildState extends State<TodoAppChild> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
@@ -19,9 +57,7 @@ class _TodoAppState extends State<TodoApp> {
       title: AppConfigs.appName,
       theme: AppThemes().theme,
       locale: const Locale('en'),
-      localizationsDelegates: const [
-        S.delegate,
-      ],
+      localizationsDelegates: const [S.delegate],
       supportedLocales: S.delegate.supportedLocales,
     );
   }

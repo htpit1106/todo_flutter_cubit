@@ -13,7 +13,7 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<void> logIn(String email, String password) async {
     try {
-      Auth.signIn(email, password);
+     await Auth.signIn(email, password);
     } catch (e) {
       debugPrint("error log in: $e");
     }
@@ -22,7 +22,7 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<void> logOut() async {
     try {
-      Auth.logout();
+    await  Auth.logout();
     } catch (e) {
       debugPrint("error log out: $e");
     }
@@ -31,7 +31,7 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<void> signUp(String email, String password) async {
     try {
-      Auth.signUp(email, password);
+      await Auth.signUp(email, password);
     } catch (e) {
       debugPrint("error sign up: $e");
     }

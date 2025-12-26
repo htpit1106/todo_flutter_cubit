@@ -27,9 +27,11 @@ class ProfileRepositoryImpl extends ProfileRepository {
   @override
   Future<void> updateProfile(ProfileEntity profile, String id) async {
     try {
-      await supabase.from('profile').update(profile.toJson()).eq('id', id).select();
+    await supabase.from('profile').update(profile.toJson()).eq('id', id).select();
+
     } catch (e) {
       debugPrint("error update");
     }
   }
+
 }

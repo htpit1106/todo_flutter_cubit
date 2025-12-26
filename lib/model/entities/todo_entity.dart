@@ -49,6 +49,7 @@ class TodoEntity {
     this.userId,
   });
 
+
   factory TodoEntity.fromJson(Map<String, dynamic> json) => _$TodoEntityFromJson(json);
 
   Map<String, dynamic> toJson() => _$TodoEntityToJson(this);

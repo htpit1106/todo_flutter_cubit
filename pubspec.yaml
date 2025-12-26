@@ -39,9 +39,12 @@ dependencies:
   go_router:
   json_annotation: ^4.8.0
   intl: ^0.20.2
+  equatable:
   supabase_flutter: ^2.10.3
   flutter_udid: ^4.1.1
   shared_preferences:
+  flutter_bloc: ^9.1.1
+  bloc:
 dev_dependencies:
   flutter_test:
     sdk: flutter
