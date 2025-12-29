@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/common/app_images.dart';
 import 'package:todo_app/generated/l10n.dart';
+import 'package:todo_app/global/user_cubit.dart';
 import 'package:todo_app/repository/auth_repository.dart';
 import 'package:todo_app/ui/page/auth/sign_up/sign_up_cubit.dart';
 import 'package:todo_app/ui/page/auth/sign_up/sign_up_navigator.dart';
@@ -19,6 +20,7 @@ class SignUpPage extends StatelessWidget {
         return SignUpCubit(
           navigator: SignUpNavigator(context: context),
           authRepos: context.read<AuthRepository>(),
+          userCubit: context.read<UserCubit>(),
         );
       },
       child: SignUpPageChild(),

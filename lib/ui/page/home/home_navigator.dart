@@ -15,7 +15,7 @@ class HomeNavigator extends AppNavigator {
     return context.push(AppRouter.addTask, extra: todo);
   }
 
-  Future<T?> openProfilePage<T>(ProfileEntity? profile){
+  Future<void> openProfilePage(ProfileEntity? profile){
    return  context.push(AppRouter.profile, extra: profile);
   }
 }

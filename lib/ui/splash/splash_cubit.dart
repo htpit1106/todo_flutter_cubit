@@ -1,12 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:todo_app/database/share_preferences_helper.dart';
+import 'package:todo_app/global/user_cubit.dart';
 import 'package:todo_app/main.dart';
 import 'package:todo_app/ui/splash/splash_navigator.dart';
 import 'package:todo_app/ui/splash/splash_state.dart';
 
 class SplashCubit extends Cubit<SplashState> {
   final SplashNavigator navigator;
-  SplashCubit({required this.navigator}) : super(SplashState());
+  final UserCubit userCubit;
+  SplashCubit({required this.navigator, required this.userCubit}) : super(SplashState());
 
   Future <void> autoLogin () async {
     // is first run
@@ -19,7 +21,13 @@ class SplashCubit extends Cubit<SplashState> {
 
 
     final session = supabase.auth.currentSession;
-    session != null ? navigator.goHome() : navigator.goLogin();
+    // get user
+    if (session != null){
+      await userCubit.loadProfile();
+      navigator.goHome();
+      return;
+    }
+    navigator.goLogin();
   }
 
 }

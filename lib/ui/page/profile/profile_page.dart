@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/common/app_icons.dart';
-import 'package:todo_app/common/app_images.dart';
 import 'package:todo_app/common/app_text_style.dart';
 import 'package:todo_app/generated/l10n.dart';
 import 'package:todo_app/global/user_cubit.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/services/auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:todo_app/main.dart';
 
 abstract class AuthRepository {
   Future<void> logIn(String email, String password);
@@ -13,7 +14,7 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<void> logIn(String email, String password) async {
     try {
-     await Auth.signIn(email, password);
+     await supabase.auth.signInWithPassword(email: email, password: password);
     } catch (e) {
       debugPrint("error log in: $e");
     }
@@ -22,7 +23,7 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<void> logOut() async {
     try {
-    await  Auth.logout();
+    await  supabase.auth.signOut(scope: SignOutScope.global);
     } catch (e) {
       debugPrint("error log out: $e");
     }
@@ -31,7 +32,7 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<void> signUp(String email, String password) async {
     try {
-      await Auth.signUp(email, password);
+      await supabase.auth.signUp(email: email, password: password);
     } catch (e) {
       debugPrint("error sign up: $e");
     }

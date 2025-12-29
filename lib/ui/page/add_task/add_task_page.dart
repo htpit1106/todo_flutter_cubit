@@ -28,6 +28,7 @@ class AddTaskPage extends StatelessWidget {
       create: (_) => AddTaskCubit(
         navigator: AddTaskNavigator(context: context),
         todoRepos: context.read<TodoRepository>(),
+        todo: todo,
       ),
       child: AddTaskChildPage(todo: todo),
     );
@@ -57,23 +58,26 @@ class _AddTaskChildPageState extends State<AddTaskChildPage> {
   void initState() {
     super.initState();
     cubit = context.read<AddTaskCubit>();
-    final todo = widget.todo;
-    if (todo != null) {
-      cubit.initialData(todo);
-      _titleController.text = todo.title ?? "";
-      _notesController.text = todo.notes ?? "";
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final todo = widget.todo;
+      if (todo != null) {
+        cubit.initialData(todo);
+        _titleController.text = todo.title ?? "";
+        _notesController.text = todo.notes ?? "";
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final titlePage = widget.todo != null ? "Edit Task" : S.of(context).title_add_new_task;
-
     return Scaffold(
       body: BlocBuilder<AddTaskCubit, AddTaskState>(
         builder: (context, state) {
-          _dateController.text = AppDateUtils.formatDate(state.date);
-          _timeController.text = AppDateUtils.formatTimeOfDayToString(state.time);
+          DateTime date = DateTime.parse(state.todo.time!);
+          TimeOfDay time = TimeOfDay.fromDateTime(DateTime.parse(state.todo.time!));
+          _dateController.text = AppDateUtils.formatDate(date);
+          _timeController.text = AppDateUtils.formatTimeOfDayToString(time);
 
           return Column(
             children: [
@@ -143,7 +147,7 @@ class _AddTaskChildPageState extends State<AddTaskChildPage> {
                         padding: const EdgeInsets.only(right: 16),
                         child: ButtonCategory(
                           icPosition: _categoryIcon(c),
-                          borderColor: state.category == c ? Colors.black : Colors.white,
+                          borderColor: state.todo.category == c ? Colors.black : Colors.white,
                           onTap: () => cubit.setCategory(c),
                         ),
                       );
@@ -164,7 +168,7 @@ class _AddTaskChildPageState extends State<AddTaskChildPage> {
                       hintText: S.of(context).hint_date,
                       icSuffix: AppIcons.icCalendar,
                       onTap: () async {
-                        final date = await AppDateUtils.pickerDateShow(context, state.date);
+                        final date = await AppDateUtils.pickerDateShow(context, cubit.date);
                         cubit.setDate(date);
                       },
                     ),
@@ -178,7 +182,7 @@ class _AddTaskChildPageState extends State<AddTaskChildPage> {
                       hintText: S.of(context).hint_time,
                       icSuffix: AppIcons.icClock,
                       onTap: () async {
-                        final time = await AppDateUtils.pickerTimeShow(context, state.time);
+                        final time = await AppDateUtils.pickerTimeShow(context, cubit.time);
                         cubit.setTime(time);
                       },
                     ),

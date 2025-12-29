@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/common/app_images.dart';
+import 'package:todo_app/global/user_cubit.dart';
 import 'package:todo_app/ui/splash/splash_cubit.dart';
 import 'package:todo_app/ui/splash/splash_navigator.dart';
 
@@ -11,7 +12,10 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<SplashCubit>(
       create: (context) {
-        return SplashCubit(navigator: SplashNavigator(context: context));
+        return SplashCubit(
+          navigator: SplashNavigator(context: context),
+          userCubit: context.read<UserCubit>(),
+        );
       },
       child: SplashScreenChild(),
     );
@@ -27,6 +31,7 @@ class SplashScreenChild extends StatefulWidget {
 
 class _SplashScreenChildState extends State<SplashScreenChild> {
   late final SplashCubit cubit;
+
   @override
   void initState() {
     super.initState();
@@ -35,7 +40,6 @@ class _SplashScreenChildState extends State<SplashScreenChild> {
       await Future.delayed(Duration(seconds: 3));
       cubit.autoLogin();
     });
-
   }
 
   @override

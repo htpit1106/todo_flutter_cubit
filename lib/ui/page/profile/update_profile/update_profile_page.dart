@@ -4,7 +4,6 @@ import 'package:todo_app/common/app_icons.dart';
 import 'package:todo_app/global/user_cubit.dart';
 import 'package:todo_app/model/entities/profile/profile_entity.dart';
 import 'package:todo_app/repository/profile_repository.dart';
-import 'package:todo_app/services/storage_service.dart';
 import 'package:todo_app/ui/loading/app_loading_indicator.dart';
 import 'package:todo_app/ui/page/profile/update_profile/update_profile_cubit.dart';
 import 'package:todo_app/ui/page/profile/update_profile/update_profile_navigator.dart';
@@ -14,6 +13,7 @@ import 'package:todo_app/ui/widgets/button_purple.dart';
 import 'package:todo_app/utils/app_date_utils.dart';
 import 'package:todo_app/utils/app_validator.dart';
 import 'package:todo_app/generated/l10n.dart';
+import 'package:todo_app/utils/image_picker_helper.dart';
 
 class UpdateProfilePage extends StatelessWidget {
   const UpdateProfilePage({super.key});
@@ -25,7 +25,6 @@ class UpdateProfilePage extends StatelessWidget {
         return UpdateProfileCubit(
           navigator: UpdateProfileNavigator(context: context),
           userCubit: context.read<UserCubit>(),
-          storageService: StorageService(),
           profileRepo: context.read<ProfileRepository>(),
         );
       },

@@ -28,6 +28,7 @@ class HomePage extends StatelessWidget {
           navigator: HomeNavigator(context: context),
           profileRepo: context.read<ProfileRepository>(),
           todoRepo: context.read<TodoRepository>(),
+          userCubit: context.read<UserCubit>(),
         );
       },
       child: HomePageChild(),
@@ -51,7 +52,9 @@ class _HomePageState extends State<HomePageChild> with RouteAware {
   void initState() {
     super.initState();
     _cubit = context.read<HomeCubit>();
-    _cubit.fetchInitialData();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _cubit.fetchInitialData();
+    });
   }
 
   @override
@@ -184,7 +187,7 @@ class _HomePageState extends State<HomePageChild> with RouteAware {
                 SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
                     final todo = completedTodos[index];
-                    final currentList = todo!.isCompleted ? completedTodos : unCompletedTodos;
+                    final currentList = todo.isCompleted ? completedTodos : unCompletedTodos;
                     final currentIndex = currentList.indexOf(todo);
                     return TodoItem(
                       todo: todo,

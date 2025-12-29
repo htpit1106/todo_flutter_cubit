@@ -1,42 +1,26 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:todo_app/model/enum/category.dart';
+import 'package:todo_app/model/entities/todo_entity.dart';
 
 class AddTaskState extends Equatable {
-  final DateTime date;
-  final TimeOfDay time;
-  final Category? category;
+  final TodoEntity todo;
   final bool isLoading;
 
   const AddTaskState({
-    required this.date,
-    required this.time,
-    this.category,
+    required this.todo,
+
     this.isLoading = false,
   });
 
-  factory AddTaskState.initial() {
-    return AddTaskState(
-      date: DateTime.now(),
-      time: TimeOfDay.now(),
-      category: null,
-    );
-  }
-
   AddTaskState copyWith({
-    DateTime? date,
-    TimeOfDay? time,
-    Category? category,
+    TodoEntity? todo,
     bool? isLoading,
   }) {
     return AddTaskState(
-      date: date ?? this.date,
-      time: time ?? this.time,
-      category: category ?? this.category,
+      todo: todo ?? this.todo,
       isLoading: isLoading ?? this.isLoading,
     );
   }
 
   @override
-  List<Object?> get props => [date, time, category, isLoading];
+  List<Object?> get props => [todo, isLoading];
 }
