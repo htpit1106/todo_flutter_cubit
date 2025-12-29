@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:todo_app/main.dart';
 
 abstract class AuthRepository {
+  final SupabaseClient supabase;
+  AuthRepository({required this.supabase});
+
   Future<void> logIn(String email, String password);
 
   Future<void> signUp(String email, String password);
 
   Future<void> logOut();
+  bool isLoggedIn();
 }
 
 class AuthRepositoryImpl extends AuthRepository {
+  AuthRepositoryImpl({required super.supabase});
+
+  @override
+  bool isLoggedIn() {
+    return supabase.auth.currentSession != null;
+  }
   @override
   Future<void> logIn(String email, String password) async {
     try {

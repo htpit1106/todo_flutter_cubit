@@ -1,45 +1,52 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_app/global/user_cubit.dart';
 import 'package:todo_app/model/entities/todo_entity.dart';
 import 'package:todo_app/model/enum/category.dart';
 import 'package:todo_app/repository/todo_repository.dart';
 import 'package:todo_app/ui/page/add_task/add_task_navigator.dart';
 import 'package:todo_app/ui/page/add_task/add_task_state.dart';
 import 'package:todo_app/utils/app_date_utils.dart';
-
-import '../../../main.dart';
-
 class AddTaskCubit extends Cubit<AddTaskState> {
   final AddTaskNavigator navigator;
   final TodoRepository todoRepos;
   final TodoEntity? todo;
+  final UserCubit userCubit;
 
-  AddTaskCubit({required this.navigator, required this.todoRepos, required this.todo})
-    : super(
-        AddTaskState(
-          todo:
-              todo ??
-              TodoEntity(
-                isCompleted: false,
-                category: Category.task,
-                time: AppDateUtils.dateToStringISO8601(DateTime.now(), TimeOfDay.now()),
-                createdAt: AppDateUtils.dateToStringISO8601(DateTime.now(), TimeOfDay.now()),
-              ),
-          isLoading: false,
-        ),
-      );
+
+  AddTaskCubit({
+    required this.navigator,
+    required this.todoRepos,
+    required this.todo,
+    required this.userCubit,
+
+  }) : super(
+         AddTaskState(
+           todo:
+               todo ??
+               TodoEntity(
+                 isCompleted: false,
+                 category: Category.task,
+                 time: AppDateUtils.dateToStringISO8601(DateTime.now(), TimeOfDay.now()),
+                 createdAt: AppDateUtils.dateToStringISO8601(DateTime.now(), TimeOfDay.now()),
+               ),
+           isLoading: false,
+         ),
+       );
 
   // get date
   DateTime get date {
-
     return todo!.time == null ? DateTime.now() : DateTime.parse(todo!.time!);
   }
 
   // get time of day
   TimeOfDay get time {
     if (todo == null) return TimeOfDay.now();
-    return todo!.time == null ? TimeOfDay.now() : TimeOfDay.fromDateTime(DateTime.parse(todo!.time!));
+    return todo!.time == null
+        ? TimeOfDay.now()
+        : TimeOfDay.fromDateTime(DateTime.parse(todo!.time!));
   }
+
   void initialData(TodoEntity? todo) {
     if (todo != null) {
       emit(state.copyWith(todo: todo));
@@ -81,7 +88,7 @@ class AddTaskCubit extends Cubit<AddTaskState> {
       }
       // add task
       else {
-        final userId = supabase.auth.currentUser?.id;
+        final userId = userCubit.state.profile!.id;
 
         TodoEntity newTodo = TodoEntity(
           isCompleted: false,

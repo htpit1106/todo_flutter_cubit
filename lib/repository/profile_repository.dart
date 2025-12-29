@@ -1,11 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:todo_app/configs/app_constants.dart';
-import 'package:todo_app/main.dart';
 import 'package:todo_app/model/entities/profile/profile_entity.dart';
 abstract class ProfileRepository {
+  final SupabaseClient supabase ;
+  ProfileRepository({required this.supabase});
   Future<ProfileEntity> getProfileById(String id);
 
   Future<void> addProfile(ProfileEntity profile);
@@ -15,6 +15,8 @@ abstract class ProfileRepository {
 }
 
 class ProfileRepositoryImpl extends ProfileRepository {
+  ProfileRepositoryImpl({required super.supabase});
+
   @override
   Future<ProfileEntity> getProfileById(String id) async {
     final data = await supabase.from('profile').select().eq('id', id);

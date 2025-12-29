@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:todo_app/common/app_themes.dart';
 import 'package:todo_app/configs/app_constants.dart';
 import 'package:todo_app/global/user_cubit.dart';
@@ -14,24 +15,24 @@ class TodoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MultiRepositoryProvider(
+    return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AuthRepository>(
-          create: (_) => AuthRepositoryImpl(),
+          create: (_) => AuthRepositoryImpl(supabase: Supabase.instance.client),
         ),
         RepositoryProvider<TodoRepository>(
-          create: (_) => TodoRepositorImpl(),
+          create: (_) => TodoRepositorImpl(supabase: Supabase.instance.client),
         ),
         RepositoryProvider<ProfileRepository>(
-          create: (_) => ProfileRepositoryImpl(),
+          create: (_) => ProfileRepositoryImpl(supabase: Supabase.instance.client),
         ),
       ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider<UserCubit>(
-            create: (context) =>
-            UserCubit(
+            create: (context) => UserCubit(
               profileRepo: context.read<ProfileRepository>(),
+              supabase: Supabase.instance.client,
             ),
           ),
         ],

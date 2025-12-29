@@ -4,7 +4,7 @@ import 'package:todo_app/app.dart';
 import 'package:todo_app/configs/app_constants.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-final supabase = Supabase.instance.client;
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

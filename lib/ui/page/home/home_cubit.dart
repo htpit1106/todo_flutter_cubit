@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/global/user_cubit.dart';
-import 'package:todo_app/main.dart';
 import 'package:todo_app/model/entities/todo_entity.dart';
 import 'package:todo_app/repository/profile_repository.dart';
 import 'package:todo_app/repository/todo_repository.dart';
@@ -15,10 +14,15 @@ class HomeCubit extends Cubit<HomeState> {
   final UserCubit userCubit;
 
 
-  HomeCubit({required this.navigator, required this.todoRepo, required this.profileRepo, required this.userCubit})
-    : super(const HomeState());
+  HomeCubit({
+    required this.navigator,
+    required this.todoRepo,
+    required this.profileRepo,
+    required this.userCubit,
 
-  String get _userId => supabase.auth.currentUser!.id;
+  }) : super(const HomeState());
+
+  String get _userId => userCubit.state.profile!.id!;
 
   //
   Future<void> fetchInitialData() async {
@@ -30,13 +34,7 @@ class HomeCubit extends Cubit<HomeState> {
         profileRepo.getProfileById(_userId),
       ]);
 
-      emit(
-        state.copyWith(
-          todos: results[0] as List<TodoEntity>,
-
-          loadingList: false,
-        ),
-      );
+      emit(state.copyWith(todos: results[0] as List<TodoEntity>, loadingList: false));
     } catch (e) {
       debugPrint('Home fetch error: $e');
       emit(state.copyWith(loadingList: false));
@@ -53,7 +51,7 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> onPressAvatar() async {
-   await navigator.openProfilePage(userCubit.state.profile);
+    await navigator.openProfilePage(userCubit.state.profile);
   }
 
   Future<void> toggleCompleted(String id, bool isCompleted) async {

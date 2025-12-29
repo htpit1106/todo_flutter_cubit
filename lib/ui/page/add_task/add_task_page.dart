@@ -5,6 +5,7 @@ import 'package:todo_app/common/app_icons.dart';
 import 'package:todo_app/common/app_images.dart';
 import 'package:todo_app/common/app_text_style.dart';
 import 'package:todo_app/generated/l10n.dart';
+import 'package:todo_app/global/user_cubit.dart';
 import 'package:todo_app/model/entities/todo_entity.dart';
 import 'package:todo_app/model/enum/category.dart';
 import 'package:todo_app/repository/todo_repository.dart';
@@ -29,6 +30,7 @@ class AddTaskPage extends StatelessWidget {
         navigator: AddTaskNavigator(context: context),
         todoRepos: context.read<TodoRepository>(),
         todo: todo,
+        userCubit: context.read<UserCubit>(),
       ),
       child: AddTaskChildPage(todo: todo),
     );

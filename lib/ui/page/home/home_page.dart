@@ -29,6 +29,7 @@ class HomePage extends StatelessWidget {
           profileRepo: context.read<ProfileRepository>(),
           todoRepo: context.read<TodoRepository>(),
           userCubit: context.read<UserCubit>(),
+
         );
       },
       child: HomePageChild(),

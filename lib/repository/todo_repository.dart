@@ -1,8 +1,10 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:todo_app/configs/app_constants.dart';
-import 'package:todo_app/main.dart';
 import 'package:todo_app/model/entities/todo_entity.dart';
 
 abstract class TodoRepository {
+  final SupabaseClient supabase;
+  TodoRepository({required this.supabase});
   Future<List<TodoEntity>> getTodos(String userId);
 
   Future<void> toggleCompleted(String id, bool isCompleted);
@@ -15,6 +17,7 @@ abstract class TodoRepository {
 }
 
 class TodoRepositorImpl extends TodoRepository{
+  TodoRepositorImpl({required super.supabase});
   @override
   Future<bool> addNewTask(TodoEntity todo) async {
     final res = await supabase.from(AppConstants.todoTableName).insert(todo.toJsonInsert()).select();
