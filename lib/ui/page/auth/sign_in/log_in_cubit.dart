@@ -13,12 +13,10 @@ class LogInCubit extends Cubit<LogInState> {
   LogInCubit({required this.navigator, required this.authRepos, required this.userCubit})
     : super(const LogInState());
 
-  // set email
   void setEmail(String email) {
     emit(state.copyWith(email: email));
   }
 
-  // set password
   void setPassword(String password) {
     emit(state.copyWith(password: password));
   }

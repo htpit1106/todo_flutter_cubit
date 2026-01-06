@@ -31,7 +31,7 @@ class _OnboardingChildPageState extends State<OnboardingChildPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
 
-              // --- Ảnh minh hoạ ---
+
               Expanded(
                 child: Image.asset(
                   AppImages.onboardingImg,
@@ -53,7 +53,7 @@ class _OnboardingChildPageState extends State<OnboardingChildPage> {
 
               const SizedBox(height: 10),
 
-              // --- Mô tả ---
+
               Text(
                 S.of(context).onboarding_description,
                 textAlign: TextAlign.center,
@@ -62,7 +62,7 @@ class _OnboardingChildPageState extends State<OnboardingChildPage> {
 
               const SizedBox(height: 30),
 
-              // --- Nút bắt đầu ---
+
               SizedBox(
                 width: double.infinity,
                 height: 50,

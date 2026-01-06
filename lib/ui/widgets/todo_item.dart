@@ -51,7 +51,7 @@ class TodoItem extends StatelessWidget {
               opacity: todo.isCompleted ? 0.7 : 1,
               child: Row(
                 children: [
-                  Image.asset(getIcPath(todo.category?? Category.task)),
+                  Image.asset(todo.category?.iconPath ?? AppIcons.icCategoryTask),
                   const SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

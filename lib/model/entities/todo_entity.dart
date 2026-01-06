@@ -13,7 +13,7 @@ class TodoEntity {
   final String? time;
   final String? createdAt;
   final String? notes;
-  bool isCompleted;
+  final bool isCompleted;
 
   TodoEntity copyWith({
     String? id,

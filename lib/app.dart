@@ -17,23 +17,14 @@ class TodoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<AuthRepository>(
-          create: (_) => AuthRepositoryImpl(supabase: Supabase.instance.client),
-        ),
-        RepositoryProvider<TodoRepository>(
-          create: (_) => TodoRepositorImpl(supabase: Supabase.instance.client),
-        ),
-        RepositoryProvider<ProfileRepository>(
-          create: (_) => ProfileRepositoryImpl(supabase: Supabase.instance.client),
-        ),
+        RepositoryProvider<AuthRepository>(create: (_) => AuthRepositoryImpl()),
+        RepositoryProvider<TodoRepository>(create: (_) => TodoRepositorImpl()),
+        RepositoryProvider<ProfileRepository>(create: (_) => ProfileRepositoryImpl()),
       ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider<UserCubit>(
-            create: (context) => UserCubit(
-              profileRepo: context.read<ProfileRepository>(),
-              supabase: Supabase.instance.client,
-            ),
+            create: (context) => UserCubit(profileRepo: context.read<ProfileRepository>()),
           ),
         ],
         child: const TodoAppChild(),

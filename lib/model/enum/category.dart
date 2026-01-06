@@ -2,13 +2,16 @@ import '../../common/app_icons.dart';
 
 enum Category { task, event, goal }
 
-String getIcPath(Category category) {
-  switch (category) {
-    case Category.task:
-      return AppIcons.icCategoryTask;
-    case Category.event:
-      return AppIcons.icCategoryEvent;
-    case Category.goal:
-      return AppIcons.icCategoryGoal;
+
+extension CategoryExtension on Category {
+  String get iconPath{
+    switch (this) {
+      case Category.task:
+        return AppIcons.icCategoryTask;
+      case Category.goal:
+        return AppIcons.icCategoryGoal;
+      case Category.event:
+        return AppIcons.icCategoryEvent;
+    }
   }
 }

@@ -7,44 +7,31 @@ import 'package:todo_app/repository/todo_repository.dart';
 import 'package:todo_app/ui/page/add_task/add_task_navigator.dart';
 import 'package:todo_app/ui/page/add_task/add_task_state.dart';
 import 'package:todo_app/utils/app_date_utils.dart';
+
 class AddTaskCubit extends Cubit<AddTaskState> {
   final AddTaskNavigator navigator;
   final TodoRepository todoRepos;
-  final TodoEntity? todo;
+  final TodoEntity todo;
   final UserCubit userCubit;
-
 
   AddTaskCubit({
     required this.navigator,
     required this.todoRepos,
     required this.todo,
     required this.userCubit,
-
-  }) : super(
-         AddTaskState(
-           todo:
-               todo ??
-               TodoEntity(
-                 isCompleted: false,
-                 category: Category.task,
-                 time: AppDateUtils.dateToStringISO8601(DateTime.now(), TimeOfDay.now()),
-                 createdAt: AppDateUtils.dateToStringISO8601(DateTime.now(), TimeOfDay.now()),
-               ),
-           isLoading: false,
-         ),
-       );
+  }) : super(AddTaskState(todo: todo, isLoading: false));
 
   // get date
   DateTime get date {
-    return todo!.time == null ? DateTime.now() : DateTime.parse(todo!.time!);
+    return todo.time == null ? DateTime.now() : DateTime.parse(todo.time!);
   }
 
   // get time of day
   TimeOfDay get time {
-    if (todo == null) return TimeOfDay.now();
-    return todo!.time == null
+
+    return todo.time == null
         ? TimeOfDay.now()
-        : TimeOfDay.fromDateTime(DateTime.parse(todo!.time!));
+        : TimeOfDay.fromDateTime(DateTime.parse(todo.time!));
   }
 
   void initialData(TodoEntity? todo) {
@@ -60,15 +47,16 @@ class AddTaskCubit extends Cubit<AddTaskState> {
 
   // set date
   void setDate(DateTime? date) {
-    DateTime time = todo!.time == null ? DateTime.now() : DateTime.parse(todo!.time!);
+    if (date == null) return;
+    DateTime time = todo.time == null ? DateTime.now() : DateTime.parse(todo.time!);
     final timeOfDay = TimeOfDay(hour: time.hour, minute: time.minute);
-    final dateString = AppDateUtils.dateToStringISO8601(date ?? time, timeOfDay);
+    final dateString = AppDateUtils.dateToStringISO8601(date, timeOfDay);
     emit(state.copyWith(todo: state.todo.copyWith(time: dateString)));
   }
 
-  // set time
+
   void setTime(TimeOfDay? time) {
-    DateTime date = todo!.time == null ? DateTime.now() : DateTime.parse(todo!.time!);
+    DateTime date = todo.time == null ? DateTime.now() : DateTime.parse(todo.time!);
 
     final dateString = AppDateUtils.dateToStringISO8601(date, time ?? TimeOfDay.now());
     emit(state.copyWith(todo: state.todo.copyWith(time: dateString)));
@@ -76,7 +64,7 @@ class AddTaskCubit extends Cubit<AddTaskState> {
 
   Future<void> saveTask({TodoEntity? todo, String? title, String? notes}) async {
     try {
-      // update
+
       if (todo != null && todo.id != null) {
         TodoEntity updatedTodo = todo.copyWith(
           title: title,
@@ -86,7 +74,7 @@ class AddTaskCubit extends Cubit<AddTaskState> {
         );
         await todoRepos.updateTodo(todo.id!, updatedTodo);
       }
-      // add task
+
       else {
         final userId = userCubit.state.profile!.id;
 

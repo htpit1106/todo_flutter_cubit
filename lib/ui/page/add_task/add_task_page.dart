@@ -29,7 +29,14 @@ class AddTaskPage extends StatelessWidget {
       create: (_) => AddTaskCubit(
         navigator: AddTaskNavigator(context: context),
         todoRepos: context.read<TodoRepository>(),
-        todo: todo,
+        todo:
+            todo ??
+            TodoEntity(
+              isCompleted: false,
+              category: Category.task,
+              time: AppDateUtils.dateToStringISO8601(DateTime.now(), TimeOfDay.now()),
+              createdAt: AppDateUtils.dateToStringISO8601(DateTime.now(), TimeOfDay.now()),
+            ),
         userCubit: context.read<UserCubit>(),
       ),
       child: AddTaskChildPage(todo: todo),
@@ -138,7 +145,6 @@ class _AddTaskChildPageState extends State<AddTaskChildPage> {
 
               const SizedBox(height: 24),
 
-              // CATEGORY
               Row(
                 children: [
                   Text(S.of(context).label_category, style: AppTextStyle.bodyMedium),
@@ -148,7 +154,7 @@ class _AddTaskChildPageState extends State<AddTaskChildPage> {
                       return Padding(
                         padding: const EdgeInsets.only(right: 16),
                         child: ButtonCategory(
-                          icPosition: _categoryIcon(c),
+                          icPosition: state.todo.category?.iconPath,
                           borderColor: state.todo.category == c ? Colors.black : Colors.white,
                           onTap: () => cubit.setCategory(c),
                         ),
@@ -224,16 +230,5 @@ class _AddTaskChildPageState extends State<AddTaskChildPage> {
         },
       ),
     );
-  }
-
-  String _categoryIcon(Category c) {
-    switch (c) {
-      case Category.task:
-        return AppIcons.icCategoryTask;
-      case Category.goal:
-        return AppIcons.icCategoryGoal;
-      case Category.event:
-        return AppIcons.icCategoryEvent;
-    }
   }
 }
