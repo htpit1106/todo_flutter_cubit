@@ -1,84 +1,82 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/common/app_icons.dart';
 import 'package:todo_app/common/app_text_style.dart';
+import 'package:todo_app/model/entities/todo_entity.dart';
+import 'package:todo_app/model/enum/category.dart';
+import 'package:todo_app/utils/app_date_utils.dart';
 
 class TodoItem extends StatelessWidget {
+  final TodoEntity todo;
+  final VoidCallback? onTap;
+  final VoidCallback? onDismissed;
+  final VoidCallback? toggleCompleteStatus;
+  final BorderRadius? borderRadius;
+
   const TodoItem({
     super.key,
-    required this.isCompleted,
-    this.titleTask,
-    this.time,
+    required this.todo,
+    this.onTap,
+    this.onDismissed,
+    this.toggleCompleteStatus,
+    this.borderRadius,
   });
-
-  final bool isCompleted;
-  final String? titleTask;
-  final String? time;
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
-      opacity: isCompleted ? 0.7 : 1,
-      child: Container(
-        width: MediaQuery.widthOf(context),
-        height: 60,
-        padding: EdgeInsets.only(right: 16, left: 16, top: 8, bottom: 8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border(bottom: BorderSide(color: Colors.grey, width: 1.0)),
+    return InkWell(
+      onTap: onTap,
+      child: Dismissible(
+        key: ValueKey(todo.id),
+        direction: DismissDirection.endToStart,
+        onDismissed: (_) => onDismissed?.call(),
+        child: _buildContent(),
+      ),
+    );
+  }
+
+  Widget _buildContent() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: const Border(
+          bottom: BorderSide(color: Colors.grey),
         ),
-        child: !isCompleted
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-
+        borderRadius: borderRadius,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Opacity(
+              opacity: todo.isCompleted ? 0.7 : 1,
+              child: Row(
                 children: [
-                  Image.asset(AppIcons.icCategoryTask),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          titleTask ?? "no title",
-                          style: TextStyle(
-                            decoration: TextDecoration.lineThrough,
-                            color: Color(0xFF1B1B1D),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                        Text(time ?? "no time", style: AppTextStyle.bodySmall),
-                      ],
-                    ),
+                  Image.asset(todo.category?.iconPath ?? AppIcons.icCategoryTask),
+                  const SizedBox(width: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(todo.title ?? "no title",
+                          style: AppTextStyle.bodyMedium),
+                      Text(AppDateUtils.stringToOclock(todo.time ?? DateTime.now().toString()),
+                          style: AppTextStyle.bodySmall),
+                    ],
                   ),
-                  Image.asset(AppIcons.icCheckedFalse),
-                ],
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-
-                children: [
-                  Image.asset(AppIcons.icCategoryTask),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          titleTask ?? "no title",
-                          style: AppTextStyle.bodyMedium,
-                        ),
-                        Text(time ?? "no time", style: AppTextStyle.bodySmall),
-                      ],
-                    ),
-                  ),
-                  Image.asset(AppIcons.icCheckedTrue),
                 ],
               ),
+            ),
+          ),
+          InkWell(
+            onTap: toggleCompleteStatus,
+            child: Image.asset(
+              todo.isCompleted
+                  ? AppIcons.icCheckedTrue
+                  : AppIcons.icCheckedFalse,
+            ),
+          ),
+        ],
       ),
     );
   }
 }
+

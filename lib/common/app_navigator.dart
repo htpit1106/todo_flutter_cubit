@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 
 
 import '../router/app_router.dart';
-import 'app_colors.dart';
+
 
 class AppNavigator {
   BuildContext context;
@@ -40,6 +40,9 @@ class AppNavigator {
         Map<String, dynamic> queryParameters = const <String, dynamic>{},
         Object? extra,
       }) async {
+    while (GoRouter.of(context).canPop()) {
+      GoRouter.of(context).pop();
+    }
     return GoRouter.of(context).pushReplacementNamed(
       name,
       pathParameters: pathParameters,
@@ -48,14 +51,6 @@ class AppNavigator {
     );
   }
 
-  // void showLoadingOverlay() {
-  //   context.loaderOverlay.show();
-  // }
-  //
-  // void hideLoadingOverlay() {
-  //   context.loaderOverlay.hide();
-  // }
-
 
   Future<void> openHomePage() {
     while (GoRouter.of(context).canPop()) {
@@ -63,12 +58,69 @@ class AppNavigator {
     }
     return GoRouter.of(context).pushNamed(AppRouter.home);
   }
-
-  void openAddTask({required String id}) {
-    GoRouter.of(context).push(AppRouter.addTask, extra: id);
+  
+  /// Show dialog
+  void showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.error_outline, color: Colors.white),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                message,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.redAccent,
+        behavior: SnackBarBehavior.floating,
+        elevation: 6,
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
-  /// Show dialog
+  void showSuccess(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.check_circle_outline, color: Colors.white),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                message,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+        elevation: 6,
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 
 
 }
